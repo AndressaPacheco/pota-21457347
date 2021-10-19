@@ -72,7 +72,6 @@ public class AppBusca {
          {
             System.out.println(ex.getMessage());
         }
-        
       }
 }
      
