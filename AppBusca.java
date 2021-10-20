@@ -9,69 +9,68 @@ Nicholas Silva Santos RA: 21391541
 */
 
 public class AppBusca {
-    
-    public static void main(String[] args)  {
 
-        String filepath = "ArquivoDados.csv";
-        System.out.println("Digite o nome completo, para buscar dados do(a) cliente:\n");
-       
-          Scanner scanner = new Scanner(System.in);          
-          String searchTerm = scanner.nextLine(); 
-    
-          readFile(searchTerm,filepath);
-       
-          while(!searchTerm.equals("exit")){
-            System.out.println("Digite novamento o nome completo do(a) cliente:\n");
-            searchTerm = scanner.nextLine();
+    public static void main(String[] args) {
 
-            readFile(searchTerm,filepath);
-          }
-    }
+        String[][] dadosClientes = new String[5824][6];
+        int count = 0;
 
-    public static void readFile( String searchTerm, String filepath ){
-
-        boolean found = false;
-        String nome = ""; String sexo = ""; String  endereço = "";
-        String cidade = ""; String email = "";
-        String telefone = ""; String idade = ""; 
-
-      
         try {
-              Scanner scanner = new Scanner(new File(filepath));
-              scanner.useDelimiter("[,\n]");
+            File file = new File("arquivoDados.csv");
 
-              while (scanner.hasNext() && !found ) {
+            Scanner scanner = new Scanner(file);
 
-                  nome = scanner.next();
-                  sexo = scanner.next();
-                  endereço = scanner.next();
-                  cidade = scanner.next();
-                  email = scanner.next();
-                  telefone  = scanner.next();
-                  idade = scanner.next();
+            while (scanner.hasNextLine()) {
 
-                    if (nome.equals(searchTerm)) {
-                        found = true;
-                    }
-              }
-                
-              if (found) {
-                  
-                  System.out.println("Nome: " + nome + "\n"
-                  + "Genêro: " + sexo  + "\n"  
-                  + "Endereço: " + endereço + "\n"
-                  + "E-mail: " + email +  "\n"
-                  + "Telefone: " + telefone   + "\n" 
-                  + "Idade: " +  idade + "\n" );
-              }                       
-              else {                      
-                  System.out.print("Usuario não encontrado!\n");
-              }   
-          } 
-        catch (IOException ex)
-         {
+                String linha = scanner.nextLine();
+    
+                dadosClientes[count] = linha.split(",");
+
+                count++;
+
+            }
+
+            scanner.close();
+
+        } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }
-      }
+
+        BuscarCliente busca = new BuscarCliente(dadosClientes);
+
+        String nomePesquisa = "";
+        Scanner sc = new Scanner(System.in);
+
+        while (nomePesquisa.equals("exit") == false) {
+            System.out.println();
+            System.out.println("Olá, digite o nome completo do(a) cliente para buscar dados\n");
+            System.out.println("Para sair digite 'exit'\n");
+            nomePesquisa = sc.nextLine();
+            System.out.println();
+
+            if (nomePesquisa.equals("exit") == false) {
+
+                int resultado = busca.pesquisaBinaria(nomePesquisa);
+
+                if (resultado == -1) {
+                    System.out.println("Cliente não encontrado");
+                    System.out.println("Comparações: " + busca.getComparacoes());
+                } else {
+                    System.out.println("Nome encontrado na posição [" + resultado + "] do vetor" );
+                    System.out.println();
+                    
+                    System.out.println("Nome: " + dadosClientes[resultado][0] + "\n" +
+                    "Sexo: " + dadosClientes[resultado][1] + "\n" +
+                    "Endereço: " + dadosClientes[resultado][2] + "\n" +
+                    "Cidade: " + dadosClientes[resultado][3] + "\n" +
+                    "E-mail: " + dadosClientes[resultado][4] + "\n" +
+                    "Telefone: " + dadosClientes[resultado][5] + "\n" +
+                    "Idade: " + dadosClientes[resultado][6] + "\n");
+                    System.out.println("Comparações: " + busca.getComparacoes());
+                }
+            }
+        }
+
+    }
+
 }
-     
